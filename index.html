@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        //변수
+        const $timeContainer = document.getElementById("timeContainer");
+        const $timeForm = document.getElementById("timeForm");
+
+        //타임폼이 제출되면~반복문 돌려서 넣어줌.
+        $timeForm.addEventListener("submit", function () {
+          const inputs = document.getElementsByTagName("input");
+          const timetexts = document.getElementsByTagName("span");
+          const timeArr = [];
+
+          for (let i = 0; i < inputs.length; i++) {
+            inputs.item(i).setAttribute("disabled", true);
+            timeArr.push(Number(inputs.item(i).value));
+            timetexts.item(i).textContent = timeArr[i];
+          }
+          start(timeArr);
+        });
+
+        //setInterval 함수 사용해서 돌려주기
+        //3번째가 0이되면 그 다음꺼 0으로 만들고, 걔가 0이되면 그 앞에거 0으로 만들고
+        //다 0이 되면 멈춤.
+
+        // const start = (timeArr) => {
+        //   setInterval(function () {
+        //     (timeArr[2]--);
+        //   }, 1000);
+        // };
+
+        const stop = () => {};
+      });
+    </script>
+    <title>Timer</title>
+  </head>
+  <body class="flex flex-col items-center justify-center bg-gray-300">
+    <div class="w-1/2 h-screen text-center">
+      <h1 class="text-3xl my-4">타이머</h1>
+      <form id="timeForm" onsubmit="return false;">
+        <label
+          ><input
+            id="test"
+            type="number"
+            min="0"
+            max="23"
+            placeholder="시"
+            required
+          />시</label
+        >
+        <label
+          ><input
+            type="number"
+            min="0"
+            max="59"
+            placeholder="분"
+            required
+          />분</label
+        >
+        <label
+          ><input
+            type="number"
+            min="0"
+            max="59"
+            placeholder="초"
+            required
+          />초</label
+        >
+        <button type="submit">시작</button>
+      </form>
+      <div class="mt-3 text-center text-lg">
+        <button id="stopBtn">중지</button>
+        <button id="restartBtn">재시작</button>
+        <button id="resetBtn">리셋</button>
+      </div>
+      <div class="w-96 h-32 mt-3 bg-white text-6xl" id="timeContainer">
+        <span class="mr-3" id="hour"></span>
+        <span class="mr-3" id="min"></span>
+        <span class="mr-3" id="second"></span>
+      </div>
+    </div>
+  </body>
+</html>
