@@ -11,34 +11,38 @@
     <script>
       window.addEventListener("DOMContentLoaded", function () {
         //변수
-        const $timeContainer = document.getElementById("timeContainer");
         const $timeForm = document.getElementById("timeForm");
+        const $inputs = document.getElementsByTagName("input"); //input 모음
+        const $timetexts = document.getElementsByTagName("span"); //span(시간표시) 모음
 
-        //타임폼이 제출되면~반복문 돌려서 넣어줌.
+        //누르면 disabled로 하고 input값-배열화해서 전달.
         $timeForm.addEventListener("submit", function () {
-          const inputs = document.getElementsByTagName("input");
-          const timetexts = document.getElementsByTagName("span");
-          const timeArr = [];
-
-          for (let i = 0; i < inputs.length; i++) {
-            inputs.item(i).setAttribute("disabled", true);
-            timeArr.push(Number(inputs.item(i).value));
-            timetexts.item(i).textContent = timeArr[i];
+          const timeArr = [3600, 60, 1];
+          for (let i = 0; i < $inputs.length; i++) {
+            $inputs.item(i).setAttribute("disabled", true);
+            timeArr[i] *= Number($inputs.item(i).value);
+            $timetexts.item(i).textContent = $inputs.item(i).value;
           }
-          start(timeArr);
+          result(timeArr);
         });
 
-        //setInterval 함수 사용해서 돌려주기
-        //3번째가 0이되면 그 다음꺼 0으로 만들고, 걔가 0이되면 그 앞에거 0으로 만들고
-        //다 0이 되면 멈춤.
+        //데이터와 시간을 받으면 해당 단위대로 실행하는 함수
+        const result = (timeArr) => {
+          let totalsec = timeArr.reduce((a, b) => a + b);
+          let timeId = setInterval(() => {
+            totalsec--;
+            let hour = Math.floor(totalsec / 3600);
+            let min = Math.floor((totalsec % 3600) / 60);
+            let sec = Math.floor((totalsec % 3600) % 60);
+          }, 1000);
+          setTimeout(() => {
+            clearInterval(timeId);
+          }, totalsec * 1000);
+        };
 
-        // const start = (timeArr) => {
-        //   setInterval(function () {
-        //     (timeArr[2]--);
-        //   }, 1000);
-        // };
+        //리셋
 
-        const stop = () => {};
+        //재시작
       });
     </script>
     <title>Timer</title>
