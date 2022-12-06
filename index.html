@@ -10,12 +10,19 @@
     />
     <script>
       window.addEventListener("DOMContentLoaded", function () {
-        //변수
         const $timeForm = document.getElementById("timeForm");
-        const $inputs = document.getElementsByTagName("input"); //input 모음
-        const $timetexts = document.getElementsByTagName("span"); //span(시간표시) 모음
+        const $inputs = document.getElementsByTagName("input");
+        const $timetexts = document.getElementsByTagName("span");
+        const $hour = document.getElementById("hour");
+        const $min = document.getElementById("min");
+        const $sec = document.getElementById("sec");
+        const $stopBtn = document.getElementById("stopBtn");
+        const $restartBtn = document.getElementById("restartBtn");
+        const $resetBtn = document.getElementById("resetBtn");
 
-        //누르면 disabled로 하고 input값-배열화해서 전달.
+        let timeId;
+        let totalsec;
+
         $timeForm.addEventListener("submit", function () {
           const timeArr = [3600, 60, 1];
           for (let i = 0; i < $inputs.length; i++) {
@@ -23,26 +30,48 @@
             timeArr[i] *= Number($inputs.item(i).value);
             $timetexts.item(i).textContent = $inputs.item(i).value;
           }
-          result(timeArr);
+          start(timeArr);
         });
 
-        //데이터와 시간을 받으면 해당 단위대로 실행하는 함수
-        const result = (timeArr) => {
-          let totalsec = timeArr.reduce((a, b) => a + b);
-          let timeId = setInterval(() => {
+        const reset = () => {
+          clearInterval(timeId);
+          for (let i = 0; i < $inputs.length; i++) {
+            $inputs.item(i).removeAttribute("disabled");
+            $inputs.item(i).value = "";
+            $timetexts.item(i).textContent = null;
+          }
+        };
+
+        const countDown = () => {
+          timeId = setInterval(() => {
             totalsec--;
-            let hour = Math.floor(totalsec / 3600);
-            let min = Math.floor((totalsec % 3600) / 60);
-            let sec = Math.floor((totalsec % 3600) % 60);
+            $hour.textContent = Math.floor(totalsec / 3600);
+            $min.textContent = Math.floor((totalsec % 3600) / 60);
+            $sec.textContent = Math.floor((totalsec % 3600) % 60);
           }, 1000);
           setTimeout(() => {
-            clearInterval(timeId);
+            reset();
           }, totalsec * 1000);
         };
 
-        //리셋
+        const start = (timeArr) => {
+          totalsec = timeArr.reduce((a, b) => a + b);
+          countDown();
+        };
 
-        //재시작
+        const stop = () => {
+          clearInterval(timeId);
+        };
+
+        const restart = () => {
+          countDown();
+        };
+
+        $stopBtn.addEventListener("click", stop);
+
+        $restartBtn.addEventListener("click", restart);
+
+        $resetBtn.addEventListener("click", reset);
       });
     </script>
     <title>Timer</title>
@@ -79,17 +108,21 @@
             required
           />초</label
         >
-        <button type="submit">시작</button>
+        <button type="submit" class="bg-green-400 rounded">시작</button>
+        <button id="stopBtn" type="button" class="bg-red-400 rounded">
+          중지
+        </button>
+        <button id="restartBtn" type="button" class="bg-blue-400 rounded">
+          재시작
+        </button>
+        <button id="resetBtn" type="button" class="bg-gray-400 rounded">
+          리셋
+        </button>
       </form>
-      <div class="mt-3 text-center text-lg">
-        <button id="stopBtn">중지</button>
-        <button id="restartBtn">재시작</button>
-        <button id="resetBtn">리셋</button>
-      </div>
       <div class="w-96 h-32 mt-3 bg-white text-6xl" id="timeContainer">
         <span class="mr-3" id="hour"></span>
         <span class="mr-3" id="min"></span>
-        <span class="mr-3" id="second"></span>
+        <span class="mr-3" id="sec"></span>
       </div>
     </div>
   </body>
